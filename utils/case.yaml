@@ -1,0 +1,9 @@
+project_name: fusion_report-2022-05-23-10-27-20
+project_host: staging
+case_type: 接口
+case_all: 1
+case_pass: 1
+case_fail: 0
+start_time: 2022/5/23 10:00:00
+run_time: 0s
+report_details: http://autotest-dev.liweijia.com/lwjTest/templates/report/fusion_http_report-2022-05-23-10-27-20.html

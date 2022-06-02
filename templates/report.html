@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>接口测试报告</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .main {
+            width: 1600px;
+            margin: 0 auto;
+            font-size: 0;
+        }
+
+        .main h4 {
+            font-weight: normal;
+            font-size: 18px;
+            line-height: 40px;
+            color: #666;
+            border-bottom: solid 1px #dcdcdc;
+
+        }
+
+        .main ul {
+            /*display: inline-block;*/
+            vertical-align: top;
+            /* width: 50%; */
+        }
+
+        .main ul li {
+            list-style-type: none;
+            /*text-align: center;*/
+            margin: 20px 0 0 0;
+            display: inline-block;
+        }
+
+        .main ul li span {
+            display: inline-block;
+            vertical-align: top;
+            line-height: 32px;
+            color: #23c08b;
+            width: auto;
+            font-size: 16px;
+        }
+
+        .main ul li .error {
+            color: #ea0029;
+        }
+
+        .main ul li .warning {
+            color: orange;
+        }
+        .main ul li .add {
+            color: #9AFF9A;
+        }
+
+        input {
+            border: solid 1px #dcdcdc;
+            outline: none;
+            border-radius: 3px;
+            /* width: 300px; */
+            width: 100px;
+            margin-right: 20px;
+            padding: 0 10px;
+            color: #666;
+            height: 32px;
+            box-sizing: border-box;
+            line-height: 30px;
+            text-align: left;
+            font-size: 16px;
+        }
+        input[type=button]{
+            width: 240px;
+        }
+
+        .draw {
+            height: 320px;
+            width: 50%;
+            display: inline-block;
+            vertical-align: top;
+            margin: 20px 0;
+            box-sizing: border-box;
+            border-left: solid 1px #dcdcdc;
+        }
+
+        button {
+            background: #23c08b;
+            color: #fff;
+            border-radius: 4px;
+            border: none;
+            outline: none;
+            width: 80px;
+            height: 30px;
+        }
+        .titles{
+            font-size: 16px;
+            color: #6C6C6C
+        }
+
+    </style>
+
+</head>
+<body>
+<div class="main" id="app">
+        <p>本邮件由系统自动发出，无需回复！</p><br>
+        <ul>
+            <li><span><b>报告名称：</b></span><input type="text" value="{{ project_name }}"></li>
+            <li><span><b>用例总数：</b></span><input type="text" value="{{ case_all }}"></li>
+            <li><span><b>用例通过：</b></span><input type="text" value="{{ case_pass }}"></li>
+            <li><span class="error"><b>用例失败：</b></span><input type="text" value="{{ case_fail }}"></li>
+            <li><span class="warning"><b>用例跳过：</b></span><input type="text" value="0"></li>
+            <li><span class="add"><b>报告地址：</b></span><a href="{{ report_details }}"><input type=button value="点击进入测试报告详情"></a></li>
+        </ul>
+</div>
+</body>
+</html>
