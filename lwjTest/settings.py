@@ -232,7 +232,7 @@ EMAIL_FROM = 'xiao_whb@163.com'
 AES_KEY="fusion"
 
 #服务器地址(用于测试报告)
-HOST = "http://autotest-dev.liweijia.com"
+HOST = "http://116.211.118.66:30309"
 
 # 跨域问题
 CORS_ORIGIN_ALLOW_ALL = True

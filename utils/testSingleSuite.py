@@ -44,7 +44,7 @@ def get_discover():
         # "start_time":result.begin_times,
             "start_time": str(times),
         "run_time":result.fields['totalTime'],
-        "report_details":HOST + "/report/fusion_http_report-{}.html".format(report_time)
+        "report_details":HOST + "/report/fusion_report-{}.html".format(report_time)
     }
     with open(yamlpath, 'w', encoding='utf-8') as f:
         yaml.dump(data, f, Dumper=yaml.RoundTripDumper,allow_unicode=True)
