@@ -96,6 +96,7 @@ class ApiSerializer(serializers.ModelSerializer):
                 instance.data = validated_data.get('data', instance.data)
                 instance.description = validated_data.get('description', instance.description)
                 instance.expect_code = validated_data.get('expect_code', instance.expect_code)
+                instance.headers = validated_data.get('headers', instance.headers)
                 instance.expect_content = validated_data.get('expect_content', instance.expect_content)
                 instance.save()
                 # 删除api的全局参数和用例API的响应参数提取再新增

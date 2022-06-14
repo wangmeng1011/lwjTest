@@ -7,7 +7,7 @@ from BeautifulReport import BeautifulReport
 from lwjTest.settings import *
 BASE_PATH=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 import os
-
+import datetime
 # if not os.environ.get('DJANGO_SETTINGS_MODULE'):
 #     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'demo3.settings')
 
@@ -32,7 +32,8 @@ def get_discover():
     )
     curpath = os.path.dirname(os.path.realpath(__file__))  # 获取文件当前路径
     yamlpath = os.path.join(curpath, "case.yaml")  # 获取yaml文件地址
-    logger.info(result.begin_times)
+    today = datetime.datetime.now().replace(microsecond=0)
+    times = today - datetime.timedelta(days=0)
     data = {
         "project_name":"fusion_report-{}".format(report_time),
         "project_host":"staging",
@@ -41,9 +42,9 @@ def get_discover():
         "case_pass":result.success_count,
         "case_fail":result.failure_count,
         # "start_time":result.begin_times,
-            "start_time": "2022/5/23 10:00:00",
+            "start_time": str(times),
         "run_time":result.fields['totalTime'],
-        "report_details":HOST + "/lwjTest/templates/report/fusion_http_report-{}.html".format(report_time)
+        "report_details":HOST + "/report/fusion_http_report-{}.html".format(report_time)
     }
     with open(yamlpath, 'w', encoding='utf-8') as f:
         yaml.dump(data, f, Dumper=yaml.RoundTripDumper,allow_unicode=True)
