@@ -11,7 +11,7 @@ rouer.register('email',views.EmailViewSet)
 
 urlpatterns = [
     #报告列表
-    re_path('list/', views.ReportVIew.as_view()),
+    path('list/', views.ReportVIew.as_view()),
     path('/list/<id>/', views.ReportVIew.as_view()),
     path('send/meail/<name>',views.mailReport),
     #报告详情
