@@ -24,7 +24,7 @@ def get_discover():
         # 报告文件名称，默认为report.html
         filename='fusion_report-{}'.format(report_time),
         # 测试报告展示名字
-        description='丽维家接口测试报告',
+        description='fusiontest接口测试报告',
         # 报告存放路径
         report_dir=os.path.join(BASE_PATH, 'templates/report'),
         # 测试报告主题样式
@@ -36,7 +36,7 @@ def get_discover():
     times = today - datetime.timedelta(days=0)
     data = {
         "project_name":"fusion_report-{}".format(report_time),
-        "project_host":"staging",
+        "project_host":"test",
         "case_type":"接口",
         "case_all":result.testsRun,
         "case_pass":result.success_count,

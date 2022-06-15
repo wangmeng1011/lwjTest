@@ -63,12 +63,12 @@ class ApiSerializer(serializers.ModelSerializer):
             }
         }
 
-    def validate_expect_content(self,value):
-        if len(value)>0:
-            if "=" not in value:
-                raise ValidationError({'expect_content': '预期结果格式错误'})
-        else:
-            return value
+    # def validate_expect_content(self,value):
+    #     if len(value)>0:
+    #         if "=" not in value:
+    #             raise ValidationError({'expect_content': '预期结果格式错误'})
+    #     else:
+    #         return value
 
     def create(self, validated_data):
         arguments_list = validated_data.pop('arguments')
@@ -90,7 +90,7 @@ class ApiSerializer(serializers.ModelSerializer):
                 argumentExtract_list = validated_data.pop('argumentExtract')
                 instance.name = validated_data.get('name', instance.name)
                 instance.http_method = validated_data.get('http_method', instance.http_method)
-                instance.host = validated_data.get('host', instance.host)
+                instance.host_id = validated_data.get('host_id', instance.host_id)
                 instance.path = validated_data.get('path', instance.path)
                 instance.request_type = validated_data.get('request_type', instance.request_type)
                 instance.data = validated_data.get('data', instance.data)

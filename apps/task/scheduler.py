@@ -23,8 +23,8 @@ def _task_id(task):
 
 def add_task(task):
     trigger_kwargs = json.loads(task.expr)
-    # _scheduler.add_job(run_case_test,args=[task.case_id],trigger="cron",id=_task_id(task),**trigger_kwargs)
-    _scheduler.add_job(run_case_task,args=[task.case_id],trigger="cron",id=_task_id(task),**trigger_kwargs)
+    _scheduler.add_job(run_case_test,args=[task.case_id],trigger="cron",id=_task_id(task),**trigger_kwargs)
+    # _scheduler.add_job(run_case_task,args=[task.case_id],trigger="cron",id=_task_id(task),**trigger_kwargs)
 
 def remove_task(task):
     job = _scheduler.get_job(_task_id(task))

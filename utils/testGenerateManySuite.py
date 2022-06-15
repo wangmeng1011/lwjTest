@@ -40,7 +40,7 @@ def get_discover():
     times = today - datetime.timedelta(days=0)
     data = {
         "project_name":"fusion_report-{}".format(report_time),
-        "project_host":"staging",
+        "project_host":"test",
         "case_type":"接口",
         "case_all":result.testsRun,
         "case_pass":result.success_count,
