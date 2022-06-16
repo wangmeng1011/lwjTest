@@ -273,4 +273,4 @@ CORS_ALLOW_HEADERS = [
 UPLOAD_ROOT="file"
 
 #钉钉配置
-DINGDING_URL='https://oapi.dingtalk.com/robot/send?access_token=262eb4efc7d17e347cb1df8c2c2852eba58baec83913b9220512026e6ed31ecb'
+DINGDING_URL='https://oapi.dingtalk.com/robot/send?access_token=263f0e9b4932e910e7f55ebbae62a07a34a4f84adc8421f11b7b20f50eecb3e4'

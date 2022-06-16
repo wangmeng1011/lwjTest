@@ -49,6 +49,7 @@ class ApiSerializer(serializers.ModelSerializer):
     argumentExtract = ApiArgumentExtractSerializer(many=True)
     # arguments = ApiArgumentSerializer(read_only=True,many=True)
     # argumentExtract = ApiArgumentExtractSerializer(read_only=True,many=True)
+    project_name = serializers.SerializerMethodField()
     class Meta:
         model = Api
         fields = "__all__"
@@ -62,13 +63,8 @@ class ApiSerializer(serializers.ModelSerializer):
                 }
             }
         }
-
-    # def validate_expect_content(self,value):
-    #     if len(value)>0:
-    #         if "=" not in value:
-    #             raise ValidationError({'expect_content': '预期结果格式错误'})
-    #     else:
-    #         return value
+    def get_project_name(self,obj):
+        return obj.project.name
 
     def create(self, validated_data):
         arguments_list = validated_data.pop('arguments')
@@ -142,5 +138,12 @@ class ProjectSerializer(serializers.ModelSerializer):
             }
         }
 
-
+class ParameterizationSerializer(serializers.ModelSerializer):
+    """
+    参数化表达式
+    """
+    class Meta:
+        model = Parameterization
+        # fields = "__all__"
+        fields = "__all__"
 
