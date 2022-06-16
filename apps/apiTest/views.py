@@ -3,8 +3,8 @@ import os
 sys.path.append(os.path.dirname(sys.path[0]))
 import datetime
 import xlrd
-from .models import Project,Api,Host,ApiArgumentExtract,ApiArgument,RunApiRecord
-from .serializers import ProjectSerializer,HostSerializer,ApiSerializer,ApiArgumentExtractSerializer,ApiArgumentSerializer,RunApiRecordSerializer
+from .models import Project,Api,Host,ApiArgumentExtract,ApiArgument,RunApiRecord,Parameterization
+from .serializers import ProjectSerializer,HostSerializer,ApiSerializer,ApiArgumentExtractSerializer,ApiArgumentSerializer,RunApiRecordSerializer,ParameterizationSerializer
 from .api_request import apiRequest
 from utils.apiResponse import ApiResponse
 from utils.pagination import MyPageNumberPagination
@@ -23,6 +23,7 @@ from ..users.authorizations import JWTAuthentication
 from ..users.permission import MyPermission
 from django.db import transaction
 from .excel import *
+from utils.modelViewSet import APIModelViewSet
 class DataCountView(APIView):
     """
     项目管理数据统计
@@ -112,7 +113,7 @@ class HostViewSets(ModelViewSet):
         ser = HostSerializer(host_name,many=True)
         return ApiResponse(results=ser.data)
 
-class ApiViewsets(ModelViewSet):
+class ApiViewsets(APIModelViewSet):
     """
         retrieve:
             返回一个api（查）
@@ -277,6 +278,12 @@ class ApiDumpView(DataDumpView):
                 api_argument_extract_result.append({"name":api_argument_extracts[api_argument_extract].name,"origin":api_argument_extracts[api_argument_extract].origin,"format":api_argument_extracts[api_argument_extract].format})
         return str(api_argument_extract_result)
 
-
+class ParameterizationViewSet(ModelViewSet):
+    """
+    参数化表达式
+    """
+    queryset = Parameterization.objects.all()
+    pagination_class = MyPageNumberPagination
+    serializer_class = ParameterizationSerializer
 
 

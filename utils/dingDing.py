@@ -22,3 +22,6 @@ class DingDing(object):
                 'Content-Type': 'application/json'
             }
             requests.post(url=self.url, data=json.dumps(self.pagrem), headers=self.headers,verify=False)
+
+# if __name__ == '__main__':
+#     DingDing().get_message("remarks:测试")

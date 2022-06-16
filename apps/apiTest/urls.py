@@ -12,6 +12,9 @@ rouer.register('project',views.ProjectViewsets,basename='project')
 rouer.register('host',views.HostViewSets,basename='host')
 #api
 rouer.register('api',views.ApiViewsets,basename='api')
+#参数化表达式
+rouer.register('parameter',views.ParameterizationViewSet,basename='parameter')
+
 
 
 urlpatterns = [
