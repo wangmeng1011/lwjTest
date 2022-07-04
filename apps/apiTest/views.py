@@ -189,7 +189,7 @@ class RunApiRecordAPIView(APIView):
             http_method=res.request.method,
             return_code=res.status_code,
             return_content=res.text,
-            data=res[1],
+            data=api_res[1],
             headers=api.headers,
             api=api,
             assert_result=assert_result
