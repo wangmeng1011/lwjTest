@@ -131,19 +131,19 @@ def run_case(case_id):
             if expect_content:
                 # 遍历断言内容
                 for assert_content in literal_eval(expect_content):
-                    # actual_value = dictor(json.loads(return_content), assert_content['name'])
-                    actual_value = assert_content['name']
-                    assert_value = assert_content['value']
-                    # 每个内容断言确认
-                    if actual_value == assert_value:
-                        assert_code = "pass"
-                    else:
-                        assert_code = "fail"
-                        remarks.append(
-                            "断言内容不一致，响应数据提取内容:{},预期内容:{},实际内容:{}".format(assert_content['name'], assert_value,
-                                                                         actual_value))
-                        logger.error("断言内容不一致，预期内容:{},实际内容:{}".format(assert_value, actual_value))
-                        break
+                    for key,value in assert_content.items():
+                        actual_value = key
+                        assert_value = dictor.dictor(json.loads(return_content), value)
+                        # 每个内容断言确认
+                        if actual_value == assert_value:
+                            assert_code = "pass"
+                        else:
+                            assert_code = "fail"
+                            remarks.append(
+                                "断言内容不一致，响应数据提取内容:{},预期内容:{},实际内容:{}".format(assert_content, assert_value,
+                                                                             actual_value))
+                            logger.error("断言内容不一致，预期内容:{},实际内容:{}".format(assert_value, actual_value))
+                            break
             else:
                 assert_code = "pass"
         # 状态码不一致
@@ -410,4 +410,3 @@ def run_case_test(case_id):
     #走多个用例执行
     else:
         run_case_list(case_list)
-

@@ -285,5 +285,5 @@ def apiRequest(api,arguments=None,reset_data=None):
                 "runTime:{}\n".format(url,runTime)
         # DingDing().get_message(content)
     # 保存运行记录
-    return res
+    return res,data
 

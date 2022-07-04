@@ -156,8 +156,8 @@ class RunApiRecordAPIView(APIView):
         for case_argument in case_arguments:
             global_arguments[case_argument.name] = case_argument.value
         logger.info("API{}的全局参数:{}".format(api, global_arguments))
-
-        res = apiRequest(api,global_arguments)
+        api_res = apiRequest(api,global_arguments)
+        res = api_res[0]
         # 断言结果(断言状态和内容)
         # 断言状态码，如果状态码不一致，直接失败
         logger.info("预期状态码:{},响应状态码:{}".format(res.status_code,api.expect_code))
@@ -189,7 +189,7 @@ class RunApiRecordAPIView(APIView):
             http_method=res.request.method,
             return_code=res.status_code,
             return_content=res.text,
-            data=api.data,
+            data=res[1],
             headers=api.headers,
             api=api,
             assert_result=assert_result

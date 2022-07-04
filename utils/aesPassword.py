@@ -49,4 +49,4 @@ def aes_encode(password, key):
     return str(base64.encodebytes(aes.encrypt(password)), encoding='utf8').replace('\n', '')  # 加密
 
 # print(aes_decode("fUU1MuosKFSLGyrexygVpA==","13683450132"))
-print(aes_encode("123456","13683450124"))
+print(aes_encode("123456","15827570029"))

@@ -23,5 +23,5 @@ class DingDing(object):
             }
             requests.post(url=self.url, data=json.dumps(self.pagrem), headers=self.headers,verify=False)
 
-# if __name__ == '__main__':
-#     DingDing().get_message("remarks:测试")
+if __name__ == '__main__':
+    DingDing().get_message("机器人:测试消息")
