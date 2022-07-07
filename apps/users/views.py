@@ -98,8 +98,8 @@ class UserAdmin(APIView):
     """
     升级权限
     """
-    # permission_classes = [MyPermission]
-    # authentication_classes = [JWTAuthentication]
+    permission_classes = [MyPermission]
+    authentication_classes = [JWTAuthentication]
     def post(self, request, mobile):
         mobile_count = Users.objects.filter(mobile=mobile).count()
         if mobile_count==0:
