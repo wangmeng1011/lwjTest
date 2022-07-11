@@ -274,7 +274,7 @@ def apiRequest(api,arguments=None,reset_data=None):
         res = requests.request(method, url, headers=headers, json=data,verify=False,allow_redirects=False)
         logger.info("response:{}".format(res.text))
     elif request_type=="data":
-        res = requests.request(method, url, headers=headers, data=data,verify=False,allow_redirects=False)
+        res = requests.request(method, url, headers=headers, params=data,verify=False,allow_redirects=False)
         logger.info("response:{}".format(res.text))
     logger.info("==============请求结束====================")
     #接口响应时间
