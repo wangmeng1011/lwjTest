@@ -273,7 +273,7 @@ def apiRequest(api,arguments=None,reset_data=None):
     if request_type=="json":
         res = requests.request(method, url, headers=headers, json=data,verify=False,allow_redirects=False)
         logger.info("response:{}".format(res.text))
-    elif request_type=="form-data":
+    elif request_type=="data":
         res = requests.request(method, url, headers=headers, data=data,verify=False,allow_redirects=False)
         logger.info("response:{}".format(res.text))
     logger.info("==============请求结束====================")

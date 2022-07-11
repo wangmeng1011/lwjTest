@@ -410,3 +410,4 @@ def run_case_test(case_id):
     #走多个用例执行
     else:
         run_case_list(case_list)
+

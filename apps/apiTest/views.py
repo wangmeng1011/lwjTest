@@ -3,6 +3,7 @@ import os
 sys.path.append(os.path.dirname(sys.path[0]))
 import datetime
 import xlrd
+import json
 from .models import Project,Api,Host,ApiArgumentExtract,ApiArgument,RunApiRecord,Parameterization
 from .serializers import ProjectSerializer,HostSerializer,ApiSerializer,ApiArgumentExtractSerializer,ApiArgumentSerializer,RunApiRecordSerializer,ParameterizationSerializer
 from .api_request import apiRequest
@@ -22,6 +23,7 @@ from rest_framework.authentication import BaseAuthentication
 from ..users.authorizations import JWTAuthentication
 from ..users.permission import MyPermission
 from django.db import transaction
+from ast import literal_eval
 from .excel import *
 from utils.modelViewSet import APIModelViewSet
 class DataCountView(APIView):
@@ -161,25 +163,49 @@ class RunApiRecordAPIView(APIView):
         # 断言结果(断言状态和内容)
         # 断言状态码，如果状态码不一致，直接失败
         logger.info("预期状态码:{},响应状态码:{}".format(res.status_code,api.expect_code))
+        # if res.status_code == int(api.expect_code):
+        #     #判断是否为空
+        #     if len(api.expect_content)>1:
+        #         expect_content = api.expect_content
+        #         expect_content_key = expect_content.split("=")[0]
+        #         expect_content_value = expect_content.split("=")[1]
+        #         # 断言内容
+        #         logger.info("断言内容的key:{}".format(dictor(res.json(), expect_content_key)))
+        #         logger.info("断言内容的value:{}".format(expect_content_value))
+        #         if dictor(res.json(), expect_content_key) == expect_content_value:
+        #             # 断言成功
+        #             assert_result = "pass"
+        #         else:
+        #             logger.info("断言内容失败")
+        #             assert_result = "fail"
+        #     else:
+        #         assert_result = "pass"
+        # else:
+        #     logger.info("状态码断言失败")
+        #     assert_result = "fail"
+        remarks= []
         if res.status_code == int(api.expect_code):
-            #判断是否为空
-            if len(api.expect_content)>1:
-                expect_content = api.expect_content
-                expect_content_key = expect_content.split("=")[0]
-                expect_content_value = expect_content.split("=")[1]
-                # 断言内容
-                logger.info("断言内容的key:{}".format(dictor(res.json(), expect_content_key)))
-                logger.info("断言内容的value:{}".format(expect_content_value))
-                if dictor(res.json(), expect_content_key) == expect_content_value:
-                    # 断言成功
-                    assert_result = "pass"
-                else:
-                    logger.info("断言内容失败")
-                    assert_result = "fail"
+            # 断言内容
+            if api.expect_content:
+                # 遍历断言内容
+                for assert_content in literal_eval(api.expect_content):
+                    for key, value in assert_content.items():
+                        actual_value = key
+                        assert_value = dictor(res.json(), value)
+                        # 每个内容断言确认
+                        if actual_value == assert_value:
+                            assert_result = "pass"
+                        else:
+                            assert_result = "fail"
+                            remarks.append(
+                                "断言内容不一致，响应数据提取内容:{},预期内容:{},实际内容:{}".format(assert_content, assert_value,
+                                                                             actual_value))
+                            logger.error("断言内容不一致，预期内容:{},实际内容:{}".format(assert_value, actual_value))
+                            break
             else:
                 assert_result = "pass"
+        # 状态码不一致
         else:
-            logger.info("状态码断言失败")
             assert_result = "fail"
         logger.info("api结果:{}".format(assert_result))
         #保存运行记录
