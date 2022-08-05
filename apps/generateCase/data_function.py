@@ -1,5 +1,4 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
 # Time:2021/5/21 2:37 下午
 import random
 import re

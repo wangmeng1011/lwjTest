@@ -1,5 +1,4 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
 # Time:2020/10/21 2:58 下午
 from __future__ import print_function
 import json

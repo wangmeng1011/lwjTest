@@ -34,8 +34,9 @@ urlpatterns = [
     path('question/',include('apps.system.urls')),
     #任务
     path('task/',include('apps.task.urls')),
-    #生成测试用例
-    path('generate/',include('apps.generateCase.urls'))
-
+    # 生成测试用例
+    path('generate/', include('apps.generateCase.urls')),
+    # xmind
+    path('xm/', include('apps.xmfile.urls')),
 
 ]

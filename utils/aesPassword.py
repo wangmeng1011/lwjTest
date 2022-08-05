@@ -1,5 +1,4 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
 # Time:2021/1/26 5:07 下午
 import base64
 from Crypto.Cipher import AES
@@ -49,4 +48,4 @@ def aes_encode(password, key):
     return str(base64.encodebytes(aes.encrypt(password)), encoding='utf8').replace('\n', '')  # 加密
 
 # print(aes_decode("fUU1MuosKFSLGyrexygVpA==","13683450132"))
-# print(aes_encode("xiaoxi123","13683450133"))
+print(aes_encode("123456","18271691751"))

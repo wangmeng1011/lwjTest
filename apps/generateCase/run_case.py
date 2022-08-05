@@ -1,5 +1,4 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
 # Time:2021/4/23 3:32 下午
 import requests
 import re
@@ -175,7 +174,7 @@ def run_case_list(case_id_list):
                         "return_time:{}\n" \
                         "return_content:{}\n" \
                         "remarks:{}".format(url,method,data,expect_code,expect_content,return_code,assert_code,return_time,return_content,remarks)
-                # DingDing().get_message(content)
+                DingDing().get_message(content)
             case_response_list.insert(i, [case_name, url, method, data, expect_code,expect_content,headers,cookie,return_code,return_time, return_content,assert_code,remarks,api_remakes])
     with open("utils/response.txt", "w") as f:
         f.write(json.dumps(case_response_list, ensure_ascii=False))

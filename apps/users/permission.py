@@ -1,5 +1,4 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
 # Time:2021/2/20 10:17 上午
 from rest_framework.permissions import BasePermission
 class MyPermission(BasePermission):

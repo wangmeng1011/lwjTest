@@ -1,5 +1,4 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
 # Time:2021/1/26 4:41 下午
 import re
 from django.contrib.auth.backends import ModelBackend

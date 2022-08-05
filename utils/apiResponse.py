@@ -1,5 +1,4 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
 # Time:2021/1/25 7:21 下午
 from rest_framework.response import Response
 

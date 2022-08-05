@@ -11,6 +11,7 @@ from celery_tasks.email.tasks import send_verify_email
 from utils.aesPassword import aes_decode
 from ..users.permission import MyPermission
 from ..users.authorizations import JWTAuthentication
+from django_filters.rest_framework import DjangoFilterBackend
 from utils.pagination import MyPageNumberPagination
 class UsernameView(APIView):
     """
@@ -83,16 +84,19 @@ class UserView(UpdateAPIView,ListCreateAPIView):
     UpdateAPIView：修改密码
     ListCreateAPIView:注册用户/用户列表
     """
+    queryset = Users.objects.all()
     serializer_class = UserSerializer
     pagination_class = MyPageNumberPagination
-    #重写查询集
-    def get_queryset(self):
-        if len(self.request.query_params)==0:
-            #没有通过条件查询返回所有用户
-            return Users.objects.all()
-        else:
-            #通过username模糊查询
-            return Users.objects.filter(username__contains=self.request.query_params.get("username","")).filter(mobile__contains=self.request.query_params.get("mobile","")).filter(name__contains=self.request.query_params.get("name",""))
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('name',)
+    # #重写查询集
+    # def get_queryset(self):
+    #     if len(self.request.query_params)==0:
+    #         #没有通过条件查询返回所有用户
+    #         return Users.objects.all()
+    #     else:
+    #         #通过username模糊查询
+    #         return Users.objects.filter(username__contains=self.request.query_params.get("username","")).filter(mobile__contains=self.request.query_params.get("mobile","")).filter(name__contains=self.request.query_params.get("name",""))
 
 class UserAdmin(APIView):
     """

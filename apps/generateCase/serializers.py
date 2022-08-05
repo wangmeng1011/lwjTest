@@ -1,5 +1,4 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
 # Time:2021/4/23 9:56 上午
 from rest_framework.serializers import ModelSerializer
 from .models import GenerateCase,GenerateCaseRunRecord,GenerateRunStepRecord,GenerateCaseName

@@ -1,5 +1,4 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
 # Time:2021/2/5 10:47 上午
 from celery_tasks.main import celery_app
 from django.core.mail import send_mail

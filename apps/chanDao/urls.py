@@ -1,5 +1,4 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
 # Time:2021/2/20 2:02 下午
 from django.urls import path,include,re_path
 from . import views

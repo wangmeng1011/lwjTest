@@ -12,7 +12,7 @@ HTTP_METHOD_CHOICE = (
 #数据类型
 REQUEST_TYPE = (
     ('json', 'json'),
-    ('form-data', 'form-data')
+    ('data', 'data')
 )
 class Project(models.Model):
     """
@@ -151,3 +151,17 @@ class RunApiRecord(models.Model):
         verbose_name_plural=verbose_name
     def __str__(self):
         return "{}".format(self.url)
+
+class Parameterization(models.Model):
+    name = models.CharField(max_length=256,verbose_name='参数化名称',null=True)
+    expression = models.CharField(max_length=256,verbose_name='表达式',null=True)
+    example = models.CharField(max_length=256,verbose_name='示例',null=True)
+    create_time = models.DateTimeField(auto_now=True, verbose_name='更新时间')
+    update_time = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
+    class Meta:
+        ordering = ['create_time']
+        db_table = "fusion_parameterization"
+        verbose_name="参数化表达式"
+        verbose_name_plural=verbose_name
+    def __str__(self):
+        return "{}".format(self.name)

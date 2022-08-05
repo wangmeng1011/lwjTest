@@ -1,5 +1,4 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
 # Time:2021/1/26 11:21 上午
 import re
 from rest_framework_jwt.settings import api_settings

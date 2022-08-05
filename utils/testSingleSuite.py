@@ -1,5 +1,4 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
 # Time:2020/12/20 11:06 下午
 import unittest
 from ruamel import yaml
@@ -8,6 +7,7 @@ from lwjTest.settings import *
 BASE_PATH=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 import os
 import datetime
+from utils.upload_oss import UploadOss
 # if not os.environ.get('DJANGO_SETTINGS_MODULE'):
 #     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'demo3.settings')
 
@@ -30,6 +30,11 @@ def get_discover():
         # 测试报告主题样式
         theme="theme_memories",
     )
+    #将报告上传oss
+    project_add = os.path.join(BASE_PATH, 'templates/report')+"/fusion_report-{}".format(report_time)+".html"
+    report_name = "fusion_report-{}".format(report_time)+".html"
+    oss_file = UploadOss().oss_file(report_name,project_add)
+
     curpath = os.path.dirname(os.path.realpath(__file__))  # 获取文件当前路径
     yamlpath = os.path.join(curpath, "case.yaml")  # 获取yaml文件地址
     today = datetime.datetime.now().replace(microsecond=0)
@@ -44,7 +49,8 @@ def get_discover():
         # "start_time":result.begin_times,
             "start_time": str(times),
         "run_time":result.fields['totalTime'],
-        "report_details":HOST + "/report/fusion_report-{}.html".format(report_time)
+        # "report_details":HOST + "/report/fusion_report-{}.html".format(report_time)
+        "report_details":oss_file
     }
     with open(yamlpath, 'w', encoding='utf-8') as f:
         yaml.dump(data, f, Dumper=yaml.RoundTripDumper,allow_unicode=True)

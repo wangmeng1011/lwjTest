@@ -1,5 +1,4 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
 # Time:2021/1/25 11:13 上午
 from django.urls import path,include,re_path
 from . import views
@@ -12,6 +11,9 @@ rouer.register('project',views.ProjectViewsets,basename='project')
 rouer.register('host',views.HostViewSets,basename='host')
 #api
 rouer.register('api',views.ApiViewsets,basename='api')
+#参数化表达式
+rouer.register('parameter',views.ParameterizationViewSet,basename='parameter')
+
 
 
 urlpatterns = [

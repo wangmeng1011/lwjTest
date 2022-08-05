@@ -52,7 +52,9 @@ INSTALLED_APPS = [
     'apps.system',#系统相关
     'apps.chanDao',#阐道
     'corsheaders',  # 跨域
-    'apps.generateCase' #自动生成用例
+    'apps.generateCase', #自动生成用例
+    'apps.xmfile',
+    'django_filters'
 
 
 
@@ -105,6 +107,9 @@ DATABASES = {
         'PASSWORD': '123456',
         'HOST': '116.211.118.66',
         'PORT': '30305',
+        # 'PASSWORD': 'xiaoxixi123',
+        # 'HOST': '127.0.0.1',
+        # 'PORT': '3306',
     }
 }
 #redis配置
@@ -199,6 +204,7 @@ REST_FRAMEWORK= {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+    'DEFAULT_FILTER_BACKENDS':['django_filters.rest_framework.DjangoFilterBackend']
 }
 
 #jwt
@@ -273,4 +279,4 @@ CORS_ALLOW_HEADERS = [
 UPLOAD_ROOT="file"
 
 #钉钉配置
-DINGDING_URL='https://oapi.dingtalk.com/robot/send?access_token=262eb4efc7d17e347cb1df8c2c2852eba58baec83913b9220512026e6ed31ecb'
+DINGDING_URL='https://oapi.dingtalk.com/robot/send?access_token=263f0e9b4932e910e7f55ebbae62a07a34a4f84adc8421f11b7b20f50eecb3e4'

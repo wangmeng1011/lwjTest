@@ -1,5 +1,4 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
 # Time:2020/9/6 5:54 下午
 import jwt
 from rest_framework_jwt.authentication import BaseJSONWebTokenAuthentication

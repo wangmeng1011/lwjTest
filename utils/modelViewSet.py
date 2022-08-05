@@ -1,5 +1,4 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
 # Time:2021/3/16 5:25 下午
 from rest_framework.exceptions import ValidationError
 from rest_framework.viewsets import ModelViewSet

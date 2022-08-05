@@ -1,5 +1,4 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
 # Time:2020/11/12 11:33 上午
 import unittest,os
 from ddt import ddt,data,unpack,file_data

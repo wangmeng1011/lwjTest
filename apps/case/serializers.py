@@ -1,5 +1,4 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
 # Time:2021/2/19 11:23 上午
 from .models import Case,CaseApiList,CaseRunRecord,CaseApiRunRecord
 from ..apiTest.serializers import ApiSerializer

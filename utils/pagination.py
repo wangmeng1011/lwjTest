@@ -1,5 +1,4 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
 # Time:2021/2/6 8:31 下午
 from rest_framework.pagination import PageNumberPagination
 

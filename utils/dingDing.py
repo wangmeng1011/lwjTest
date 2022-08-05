@@ -1,5 +1,4 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
 # Time:2020/10/22 10:01 上午
 import requests,json
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
@@ -22,3 +21,6 @@ class DingDing(object):
                 'Content-Type': 'application/json'
             }
             requests.post(url=self.url, data=json.dumps(self.pagrem), headers=self.headers,verify=False)
+
+# if __name__ == '__main__':
+#     DingDing().get_message("remarks:测试")

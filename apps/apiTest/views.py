@@ -3,8 +3,9 @@ import os
 sys.path.append(os.path.dirname(sys.path[0]))
 import datetime
 import xlrd
-from .models import Project,Api,Host,ApiArgumentExtract,ApiArgument,RunApiRecord
-from .serializers import ProjectSerializer,HostSerializer,ApiSerializer,ApiArgumentExtractSerializer,ApiArgumentSerializer,RunApiRecordSerializer
+import json
+from .models import Project,Api,Host,ApiArgumentExtract,ApiArgument,RunApiRecord,Parameterization
+from .serializers import ProjectSerializer,HostSerializer,ApiSerializer,ApiArgumentExtractSerializer,ApiArgumentSerializer,RunApiRecordSerializer,ParameterizationSerializer
 from .api_request import apiRequest
 from utils.apiResponse import ApiResponse
 from utils.pagination import MyPageNumberPagination
@@ -22,7 +23,12 @@ from rest_framework.authentication import BaseAuthentication
 from ..users.authorizations import JWTAuthentication
 from ..users.permission import MyPermission
 from django.db import transaction
+from ast import literal_eval
 from .excel import *
+from utils.modelViewSet import APIModelViewSet
+from django_filters.rest_framework import DjangoFilterBackend
+from .filters import ApiFilter
+from rest_framework.generics import GenericAPIView
 class DataCountView(APIView):
     """
     项目管理数据统计
@@ -112,7 +118,7 @@ class HostViewSets(ModelViewSet):
         ser = HostSerializer(host_name,many=True)
         return ApiResponse(results=ser.data)
 
-class ApiViewsets(ModelViewSet):
+class ApiViewsets(APIModelViewSet):
     """
         retrieve:
             返回一个api（查）
@@ -132,13 +138,11 @@ class ApiViewsets(ModelViewSet):
     pagination_class = MyPageNumberPagination
     permission_classes = [MyPermission]
     authentication_classes = [JWTAuthentication]
-
-    #筛选
-    @action(methods=['get'],detail=False)
-    def query_name(self, request, *args,**kwargs):
-        api_name_http_method_path = Api.objects.filter(name__contains=self.request.query_params.get('name','')).filter(http_method__contains=self.request.query_params.get('http_method','')).filter(path__contains=self.request.query_params.get('path',''))
-        ser = ApiSerializer(api_name_http_method_path,many=True)
-        return ApiResponse(results=ser.data)
+    # def get_queryset(self):
+    #     try:
+    #         return self.queryset.filter(path__contains=self.request.query_params.get('path', '')).filter(project_id=self.request.query_params.get('project_id'))
+    #     except Exception as e:
+    #         return self.queryset.filter(path__contains=self.kwargs.get('path'))
 
 class RunApiRecordAPIView(APIView):
     """
@@ -155,30 +159,54 @@ class RunApiRecordAPIView(APIView):
         for case_argument in case_arguments:
             global_arguments[case_argument.name] = case_argument.value
         logger.info("API{}的全局参数:{}".format(api, global_arguments))
-
-        res = apiRequest(api,global_arguments)
+        api_res = apiRequest(api,global_arguments)
+        res = api_res[0]
         # 断言结果(断言状态和内容)
         # 断言状态码，如果状态码不一致，直接失败
         logger.info("预期状态码:{},响应状态码:{}".format(res.status_code,api.expect_code))
+        # if res.status_code == int(api.expect_code):
+        #     #判断是否为空
+        #     if len(api.expect_content)>1:
+        #         expect_content = api.expect_content
+        #         expect_content_key = expect_content.split("=")[0]
+        #         expect_content_value = expect_content.split("=")[1]
+        #         # 断言内容
+        #         logger.info("断言内容的key:{}".format(dictor(res.json(), expect_content_key)))
+        #         logger.info("断言内容的value:{}".format(expect_content_value))
+        #         if dictor(res.json(), expect_content_key) == expect_content_value:
+        #             # 断言成功
+        #             assert_result = "pass"
+        #         else:
+        #             logger.info("断言内容失败")
+        #             assert_result = "fail"
+        #     else:
+        #         assert_result = "pass"
+        # else:
+        #     logger.info("状态码断言失败")
+        #     assert_result = "fail"
+        remarks= []
         if res.status_code == int(api.expect_code):
-            #判断是否为空
-            if len(api.expect_content)>1:
-                expect_content = api.expect_content
-                expect_content_key = expect_content.split("=")[0]
-                expect_content_value = expect_content.split("=")[1]
-                # 断言内容
-                logger.info("断言内容的key:{}".format(dictor(res.json(), expect_content_key)))
-                logger.info("断言内容的value:{}".format(expect_content_value))
-                if dictor(res.json(), expect_content_key) == expect_content_value:
-                    # 断言成功
-                    assert_result = "pass"
-                else:
-                    logger.info("断言内容失败")
-                    assert_result = "fail"
+            # 断言内容
+            if api.expect_content:
+                # 遍历断言内容
+                for assert_content in literal_eval(api.expect_content):
+                    for key, value in assert_content.items():
+                        actual_value = key
+                        assert_value = dictor(res.json(), value)
+                        # 每个内容断言确认
+                        if actual_value == assert_value:
+                            assert_result = "pass"
+                        else:
+                            assert_result = "fail"
+                            remarks.append(
+                                "断言内容不一致，响应数据提取内容:{},预期内容:{},实际内容:{}".format(assert_content, assert_value,
+                                                                             actual_value))
+                            logger.error("断言内容不一致，预期内容:{},实际内容:{}".format(assert_value, actual_value))
+                            break
             else:
                 assert_result = "pass"
+        # 状态码不一致
         else:
-            logger.info("状态码断言失败")
             assert_result = "fail"
         logger.info("api结果:{}".format(assert_result))
         #保存运行记录
@@ -188,7 +216,7 @@ class RunApiRecordAPIView(APIView):
             http_method=res.request.method,
             return_code=res.status_code,
             return_content=res.text,
-            data=api.data,
+            data=api_res[1],
             headers=api.headers,
             api=api,
             assert_result=assert_result
@@ -277,6 +305,12 @@ class ApiDumpView(DataDumpView):
                 api_argument_extract_result.append({"name":api_argument_extracts[api_argument_extract].name,"origin":api_argument_extracts[api_argument_extract].origin,"format":api_argument_extracts[api_argument_extract].format})
         return str(api_argument_extract_result)
 
-
+class ParameterizationViewSet(ModelViewSet):
+    """
+    参数化表达式
+    """
+    queryset = Parameterization.objects.all()
+    pagination_class = MyPageNumberPagination
+    serializer_class = ParameterizationSerializer
 
 

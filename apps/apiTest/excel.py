@@ -1,9 +1,5 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
-# Time:2021/4/6 5:40 下午
-# -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
-# Time:2021/2/26 11:14 上午
+
 from io import BytesIO
 import xlwt
 import datetime

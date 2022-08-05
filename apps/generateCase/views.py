@@ -243,7 +243,7 @@ class SummaryCaseApiView(APIView):
                   "当日用例中新增接口数量:{}\n" \
                   "总共用例数量:{}\n" \
                   "总共用例中接口数量:{}".format(data_result[0][0],data_result[2][0],data_result[1][0],data_result[3][0])
-        DingDing().get_message(message)
+        # DingDing().get_message(message)
         return ApiResponse(msg="用例汇总完成")
 
 

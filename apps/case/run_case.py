@@ -1,5 +1,4 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
 # Time:2020/10/21 2:56 下午
 import requests
 import json
@@ -15,6 +14,7 @@ from .serializers import CaseRunRecordSerializer
 from ruamel import yaml
 from ast import literal_eval
 from ..report.models import ReportModel
+from utils.dingDing import DingDing
 def run_case(case_id):
     """
     单个测试用例执行
@@ -37,10 +37,10 @@ def run_case(case_id):
         # 运行api
         if reset_data=='':
             api_model = Api.objects.get(id=api.api_id)
-            resp = apiRequest(api=api_model, arguments=global_arguments)
+            resp = apiRequest(api=api_model, arguments=global_arguments)[0]
         else:
             api_model = Api.objects.get(id=api.api_id)
-            resp = apiRequest(api=api_model, arguments=global_arguments,reset_data=reset_data)
+            resp = apiRequest(api=api_model, arguments=global_arguments,reset_data=reset_data)[0]
 
         #保存case的api运行记录
         CaseApiRunRecord.objects.create(
@@ -108,50 +108,86 @@ def run_case(case_id):
         #断言内容
         #判断是否已重置断言内容
         api_id = response_data[i]['api'].get("id")
-        try:
-            reset_expect_content = CaseApiList.objects.get(case_id=case_id,index=i,api_id=api_id).reset_expect_content
-            if reset_expect_content=='':
-                assert_content = response_data[i]['api'].get("expect_content")
-            else:
-                assert_content = reset_expect_content
+        # try:
+        reset_expect_content = CaseApiList.objects.get(case_id=case_id,index=i,api_id=api_id).reset_expect_content
+        if reset_expect_content=='':
+            assert_content = response_data[i]['api'].get("expect_content")
+        else:
+            assert_content = reset_expect_content
 
-            reset_expect_content = CaseApiList.objects.get(case_id=case_id,index=i,api_id=api_id).reset_expect_code
-            if reset_expect_content=='':
-                expect_code = expect_code
+        reset_expect_content = CaseApiList.objects.get(case_id=case_id,index=i,api_id=api_id).reset_expect_code
+        if reset_expect_content=='':
+            expect_code = expect_code
+        else:
+            expect_code = int(reset_expect_content)
+
+
+        #断言状态码
+        remarks = []
+        if expect_code == return_code:
+            # 断言内容
+            logger.info("断言数据:{}".format(response_data[i].get("expect_content")))
+            if expect_content:
+                # 遍历断言内容
+                for assert_content in literal_eval(expect_content):
+                    for key,value in assert_content.items():
+                        actual_value = key
+                        assert_value = dictor.dictor(json.loads(return_content), value)
+                        # 每个内容断言确认
+                        if type(assert_value)==int:
+                            if int(actual_value) == assert_value:
+                                assert_code = "pass"
+                            else:
+                                assert_code = "fail"
+                                remarks.append(
+                                    "断言内容不一致，响应数据提取内容:{},预期内容:{},实际内容:{}".format(assert_content, assert_value,
+                                                                                 actual_value))
+                                logger.error("断言内容不一致，预期内容:{},实际内容:{}".format(assert_value, actual_value))
+                                break
+                        elif type(assert_value)==float:
+                            if float(actual_value) == assert_value:
+                                assert_code = "pass"
+                            else:
+                                assert_code = "fail"
+                                remarks.append(
+                                    "断言内容不一致，响应数据提取内容:{},预期内容:{},实际内容:{}".format(assert_content, assert_value,
+                                                                                 actual_value))
+                                logger.error("断言内容不一致，预期内容:{},实际内容:{}".format(assert_value, actual_value))
+                                break
+                        elif type(assert_value)==str:
+                            if actual_value == assert_value:
+                                assert_code = "pass"
+                            else:
+                                assert_code = "fail"
+                                remarks.append(
+                                    "断言内容不一致，响应数据提取内容:{},预期内容:{},实际内容:{}".format(assert_content, assert_value,
+                                                                                 actual_value))
+                                logger.error("断言内容不一致，预期内容:{},实际内容:{}".format(assert_value, actual_value))
+                                break
             else:
-                expect_code = int(reset_expect_content)
-            #断言状态码
-            if expect_code == return_code:
-                # 断言响应内容
-                if ";" in assert_content:
-                    logger.info("断言数据:{}".format(assert_content))
-                    for assert_data in assert_content[0:-1].split(";"):
-                        assert_content_key = assert_data.split("=")[0]
-                        assert_content_value = assert_data.split("=")[1]
-                        logger.info(return_content)
-                        assert_key = dictor.dictor(json.loads(return_content), assert_content_key)
-                        logger.info("断言内容的key:{}".format(assert_key))
-                        if "{{" in assert_content_value:
-                            assert_content_value = assert_content_value[2:-2]
-                            try:
-                                assert_content_value = global_arguments[assert_content_value]
-                            except:
-                                logger.error("global_arguments不存在key:{}".format(assert_content_value))
-                            logger.info("已替换断言内容的value:{}".format(assert_content_value))
-                        logger.info("断言内容的value:{}".format(assert_content_value))
-                        if assert_key == assert_content_value:
-                            assert_code = "pass"
-                        else:
-                            assert_code = "fail"
-                else:
-                    assert_code = "pass"
-            else:
-                assert_code = "fail"
-        except Exception as e:
-            logger.error("断言报错:{}".format(e))
-            assert_code="fail"
-        api_response_list.insert(i, [case_name, name, url, method, data, return_code, expect_code, return_content,
-                                     assert_code])
+                assert_code = "pass"
+        # 状态码不一致
+        else:
+            assert_code = "fail"
+            remarks.append("状态码不一致，预期状态码:{},实际状态码:{}".format(expect_code, return_code))
+            logger.error("状态码不一致，预期状态码:{},实际状态码:{}".format(expect_code, return_code))
+    # except Exception as e:
+    #     logger.error("断言报错:{}".format(e))
+    #     assert_code = "fail"
+        if assert_code == "fail":
+            content = "url:{}\n" \
+                      "method:{}\n" \
+                      "data:{}\n" \
+                      "expect_code:{}\n" \
+                      "expect_content:{}\n" \
+                      "return_code:{}\n" \
+                      "assert_code:{}\n" \
+                      "return_content:{}\n" \
+                      "remarks:{}".format(url, method, data, expect_code, expect_content, return_code, assert_code,
+                                          return_content, remarks)
+            DingDing().get_message(content)
+
+        api_response_list.insert(i, [case_name, name, url, method, data, return_code, expect_code, return_content,assert_code])
     with open("utils/response.txt", "w") as f:
         f.write(json.dumps(api_response_list, ensure_ascii=False))
     os.system('python3 utils/testSingleSuite.py')
@@ -200,10 +236,10 @@ def run_case_list(case_id_list):
             # 运行api
             if reset_data == '':
                 api_model = Api.objects.get(id=api.api_id)
-                resp = apiRequest(api=api_model, arguments=global_arguments)
+                resp = apiRequest(api=api_model, arguments=global_arguments)[0]
             else:
                 api_model = Api.objects.get(id=api.api_id)
-                resp = apiRequest(api=api_model, arguments=global_arguments, reset_data=reset_data)
+                resp = apiRequest(api=api_model, arguments=global_arguments, reset_data=reset_data)[0]
         #     # 运行API以及添加API参数
         # api_model_list = case.api_list.all()
         # # 遍历测试用例的api
@@ -299,30 +335,29 @@ def run_case_list(case_id_list):
                     expect_code = int(reset_expect_content)
 
                 # 断言状态码
+                remarks = []
                 if expect_code == return_code:
-                    # 断言响应内容
-                    if ";" in assert_content:
-                        logger.info("断言数据:{}".format(assert_content))
-                        for assert_data in assert_content[0:-1].split(";"):
-                            assert_content_key = assert_data.split("=")[0]
-                            assert_content_value = assert_data.split("=")[1]
-                            logger.info(return_content)
-                            assert_key = dictor.dictor(json.loads(return_content), assert_content_key)
-                            logger.info("断言内容的key:{}".format(assert_key))
-                            if "{{" in assert_content_value:
-                                assert_content_value = assert_content_value[2:-2]
-                                try:
-                                    assert_content_value = global_arguments[assert_content_value]
-                                except:
-                                    logger.error("global_arguments不存在key:{}".format(assert_content_value))
-                                logger.info("已替换断言内容的value:{}".format(assert_content_value))
-                            logger.info("断言内容的value:{}".format(assert_content_value))
-                            if assert_key == assert_content_value:
-                                assert_code = "pass"
-                            else:
-                                assert_code = "fail"
+                    # 断言内容
+                    logger.info("断言数据:{}".format(response_data[i].get("expect_content")))
+                    if expect_content:
+                        # 遍历断言内容
+                        for assert_content in literal_eval(expect_content):
+                            for key, value in assert_content.items():
+                                actual_value = key
+                                assert_value = dictor.dictor(json.loads(return_content), value)
+                                # 每个内容断言确认
+                                if actual_value == assert_value:
+                                    assert_code = "pass"
+                                else:
+                                    assert_code = "fail"
+                                    remarks.append(
+                                        "断言内容不一致，响应数据提取内容:{},预期内容:{},实际内容:{}".format(assert_content, assert_value,
+                                                                                     actual_value))
+                                    logger.error("断言内容不一致，预期内容:{},实际内容:{}".format(assert_value, actual_value))
+                                    break
                     else:
                         assert_code = "pass"
+                # 状态码不一致
                 else:
                     assert_code = "fail"
             except Exception as e:

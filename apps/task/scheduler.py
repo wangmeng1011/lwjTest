@@ -1,5 +1,4 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
 # Time:2020/11/23 1:49 下午
 from apscheduler.schedulers.background import BackgroundScheduler
 from ..case.run_case import run_case,run_case_test,run_case_list

@@ -1,5 +1,4 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
 # Time:2020/12/20 11:06 下午
 import unittest
 import os
@@ -8,7 +7,7 @@ import sys
 from lwjTest.settings import logger,HOST
 from ruamel import yaml
 from BeautifulReport import BeautifulReport
-
+from utils.upload_oss import UploadOss
 BASE_PATH=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # if not os.environ.get('DJANGO_SETTINGS_MODULE'):
@@ -16,7 +15,6 @@ BASE_PATH=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # 第二种错误做如下设置，更新配置文件即可；
 # import django
-
 # django.setup()
 import datetime
 def get_discover():
@@ -34,6 +32,7 @@ def get_discover():
         # 测试报告主题样式
         theme="theme_memories",
     )
+
     curpath = os.path.dirname(os.path.realpath(__file__))  # 获取文件当前路径
     yamlpath = os.path.join(curpath, "case.yaml")  # 获取yaml文件地址
     today = datetime.datetime.now().replace(microsecond=0)

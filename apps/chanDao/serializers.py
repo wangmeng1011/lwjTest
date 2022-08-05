@@ -1,5 +1,5 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
+
 # Time:2021/2/20 2:02 下午
 from rest_framework import serializers
 from .models import ChanDaoModular,ChanDaoCase,ChanDaoProject,ChanDaoCaseStep

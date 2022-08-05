@@ -1,5 +1,4 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
 # Time:2021/1/25 11:14 上午
 import re
 from rest_framework.serializers import ModelSerializer

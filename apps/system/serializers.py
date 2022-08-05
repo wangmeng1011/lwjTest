@@ -1,5 +1,5 @@
 # -*-coding:utf-8 -*-
-# __author__ = 'wuhongbin'
+
 # Time:2021/2/24 5:59 下午
 from rest_framework import serializers
 from .models import FormalBug,SyetemQuestion
