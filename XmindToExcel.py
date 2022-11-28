@@ -156,7 +156,7 @@ class XmindToExcel():
 
         else:
             df = pd.DataFrame(case_list)
-            savePath = Tools.get_OSInfo(SaveExclFilePath+os.path.splitext(os.path.split(XMD_Path)[1])[0]+".xlsx")
+            savePath = Tools.get_OSInfo(SaveExclFilePath+"\\"+os.path.splitext(os.path.split(XMD_Path)[1])[0]+".xlsx")
             df.to_excel(savePath, index=False)
             # pprint(case_list)
             if is_complete == True:
